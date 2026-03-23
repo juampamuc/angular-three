@@ -8,19 +8,19 @@ These instructions guide you through migrating an Nx workspace containing multip
 
 1. **Identify all Vitest projects**:
 
-   ```bash
-   nx show projects --with-target test
-   ```
+    ```bash
+    nx show projects --with-target test
+    ```
 
 2. **Locate all Vitest configuration files**:
-   - Search for `vitest.config.{ts,js,mjs}`
-   - Search for `vitest.workspace.{ts,js,mjs}`
-   - Check `project.json` files for inline Vitest configuration
+    - Search for `vitest.config.{ts,js,mjs}`
+    - Search for `vitest.workspace.{ts,js,mjs}`
+    - Check `project.json` files for inline Vitest configuration
 
 3. **Identify affected code**:
-   - Test files: `**/*.{spec,test}.{ts,js,tsx,jsx}`
-   - Mock usage: Files using `vi.fn()`, `vi.spyOn()`, `vi.mock()`
-   - Coverage configuration references
+    - Test files: `**/*.{spec,test}.{ts,js,tsx,jsx}`
+    - Mock usage: Files using `vi.fn()`, `vi.spyOn()`, `vi.mock()`
+    - Coverage configuration references
 
 ## Migration Steps by Category
 
@@ -35,25 +35,25 @@ These instructions guide you through migrating an Nx workspace containing multip
 ```typescript
 // ❌ BEFORE (Vitest 3.x)
 export default defineConfig({
-  test: {
-    coverage: {
-      all: true,
-      extensions: ['.ts', '.tsx'],
-      ignoreEmptyLines: false,
-      experimentalAstAwareRemapping: true,
-    },
-  },
+	test: {
+		coverage: {
+			all: true,
+			extensions: ['.ts', '.tsx'],
+			ignoreEmptyLines: false,
+			experimentalAstAwareRemapping: true,
+		},
+	},
 });
 
 // ✅ AFTER (Vitest 4.0)
 export default defineConfig({
-  test: {
-    coverage: {
-      // Explicitly define files to include in coverage
-      include: ['src/**/*.{ts,tsx}'],
-      // Remove: all, extensions, ignoreEmptyLines, experimentalAstAwareRemapping
-    },
-  },
+	test: {
+		coverage: {
+			// Explicitly define files to include in coverage
+			include: ['src/**/*.{ts,tsx}'],
+			// Remove: all, extensions, ignoreEmptyLines, experimentalAstAwareRemapping
+		},
+	},
 });
 ```
 
@@ -75,29 +75,29 @@ export default defineConfig({
 ```typescript
 // ❌ BEFORE (Vitest 3.x)
 export default defineConfig({
-  test: {
-    maxThreads: 4,
-    maxForks: 2,
-    singleThread: false,
-    poolOptions: {
-      threads: {
-        useAtomics: true,
-      },
-      vmThreads: {
-        memoryLimit: '512MB',
-      },
-    },
-  },
+	test: {
+		maxThreads: 4,
+		maxForks: 2,
+		singleThread: false,
+		poolOptions: {
+			threads: {
+				useAtomics: true,
+			},
+			vmThreads: {
+				memoryLimit: '512MB',
+			},
+		},
+	},
 });
 
 // ✅ AFTER (Vitest 4.0)
 export default defineConfig({
-  test: {
-    maxWorkers: 4, // Consolidates maxThreads and maxForks
-    isolate: true, // Replaces singleThread: false
-    // Remove: poolOptions, threads.useAtomics
-    vmMemoryLimit: '512MB', // Moved to top-level
-  },
+	test: {
+		maxWorkers: 4, // Consolidates maxThreads and maxForks
+		isolate: true, // Replaces singleThread: false
+		// Remove: poolOptions, threads.useAtomics
+		vmMemoryLimit: '512MB', // Moved to top-level
+	},
 });
 ```
 
@@ -118,16 +118,16 @@ export default defineConfig({
 ```typescript
 // ❌ BEFORE (Vitest 3.x)
 export default defineConfig({
-  test: {
-    workspace: ['apps/*', 'libs/*'],
-  },
+	test: {
+		workspace: ['apps/*', 'libs/*'],
+	},
 });
 
 // ✅ AFTER (Vitest 4.0)
 export default defineConfig({
-  test: {
-    projects: ['apps/*', 'libs/*'],
-  },
+	test: {
+		projects: ['apps/*', 'libs/*'],
+	},
 });
 ```
 
@@ -147,13 +147,13 @@ export default defineConfig({
 ```typescript
 // ❌ BEFORE (Vitest 3.x)
 export default defineConfig({
-  test: {
-    browser: {
-      enabled: true,
-      provider: 'playwright', // String value
-      testerScripts: ['./setup.js'],
-    },
-  },
+	test: {
+		browser: {
+			enabled: true,
+			provider: 'playwright', // String value
+			testerScripts: ['./setup.js'],
+		},
+	},
 });
 
 // Import changes
@@ -161,13 +161,13 @@ import { page } from '@vitest/browser';
 
 // ✅ AFTER (Vitest 4.0)
 export default defineConfig({
-  test: {
-    browser: {
-      enabled: true,
-      provider: { name: 'playwright' }, // Object value
-      testerHtmlPath: './test-setup.html', // Renamed from testerScripts
-    },
-  },
+	test: {
+		browser: {
+			enabled: true,
+			provider: { name: 'playwright' }, // Object value
+			testerHtmlPath: './test-setup.html', // Renamed from testerScripts
+		},
+	},
 });
 
 // Import changes
@@ -190,26 +190,26 @@ import { page } from 'vitest/browser';
 ```typescript
 // ❌ BEFORE (Vitest 3.x)
 export default defineConfig({
-  test: {
-    deps: {
-      external: ['some-package'],
-      inline: ['inline-package'],
-      fallbackCJS: true,
-    },
-  },
+	test: {
+		deps: {
+			external: ['some-package'],
+			inline: ['inline-package'],
+			fallbackCJS: true,
+		},
+	},
 });
 
 // ✅ AFTER (Vitest 4.0)
 export default defineConfig({
-  test: {
-    server: {
-      deps: {
-        external: ['some-package'],
-        inline: ['inline-package'],
-        fallbackCJS: true,
-      },
-    },
-  },
+	test: {
+		server: {
+			deps: {
+				external: ['some-package'],
+				inline: ['inline-package'],
+				fallbackCJS: true,
+			},
+		},
+	},
 });
 ```
 
@@ -282,13 +282,13 @@ new MockConstructor(); // May have worked in v3
 
 // ✅ AFTER (Vitest 4.0) - Must use function or class
 const MockConstructor = vi.fn(function () {
-  return { value: 42 };
+	return { value: 42 };
 });
 new MockConstructor(); // Correctly supports 'new'
 
 // Or use class syntax
 class MockClass {
-  value = 42;
+	value = 42;
 }
 const MockConstructor = vi.fn(MockClass);
 ```
@@ -359,9 +359,9 @@ const spy = vi.spyOn({ method: mock }, 'method');
 ```typescript
 // ❌ BEFORE (Vitest 3.x)
 vi.mock('./utils', () => ({
-  get value() {
-    return 42;
-  }, // Would call getter
+	get value() {
+		return 42;
+	}, // Would call getter
 }));
 
 import { value } from './utils';
@@ -373,9 +373,9 @@ spy.mockRestore(); // Might work on automocks
 
 // ✅ AFTER (Vitest 4.0)
 vi.mock('./utils', () => ({
-  get value() {
-    return 42;
-  },
+	get value() {
+		return 42;
+	},
 }));
 
 import { value } from './utils';
@@ -383,7 +383,7 @@ console.log(value); // Returns undefined (doesn't call getter)
 
 // Explicitly return value if needed
 vi.mock('./utils', () => ({
-  value: 42, // Not a getter
+	value: 42, // Not a getter
 }));
 
 // mockRestore no longer works on automocks
@@ -414,15 +414,15 @@ const promise = asyncMock();
 
 // settledResults is immediately populated with 'incomplete' status
 expect(asyncMock.mock.settledResults[0]).toEqual({
-  type: 'incomplete',
-  value: undefined,
+	type: 'incomplete',
+	value: undefined,
 });
 
 // After promise resolves
 await promise;
 expect(asyncMock.mock.settledResults[0]).toEqual({
-  type: 'fulfilled',
-  value: 'result',
+	type: 'fulfilled',
+	value: 'result',
 });
 ```
 
@@ -443,15 +443,15 @@ expect(asyncMock.mock.settledResults[0]).toEqual({
 ```typescript
 // ❌ BEFORE (Vitest 3.x)
 export default {
-  onCollected(files) {
-    // Handle collected files
-  },
-  onTaskUpdate(task) {
-    // Handle task update
-  },
-  onFinished(files) {
-    // Handle completion
-  },
+	onCollected(files) {
+		// Handle collected files
+	},
+	onTaskUpdate(task) {
+		// Handle task update
+	},
+	onFinished(files) {
+		// Handle completion
+	},
 };
 
 // ✅ AFTER (Vitest 4.0)
@@ -473,16 +473,16 @@ export default {
 ```typescript
 // ❌ BEFORE (Vitest 3.x)
 export default defineConfig({
-  test: {
-    reporters: ['basic'],
-  },
+	test: {
+		reporters: ['basic'],
+	},
 });
 
 // ✅ AFTER (Vitest 4.0)
 export default defineConfig({
-  test: {
-    reporters: [['default', { summary: false }]], // Equivalent to 'basic'
-  },
+	test: {
+		reporters: [['default', { summary: false }]], // Equivalent to 'basic'
+	},
 });
 
 // For verbose (tree output)
@@ -509,9 +509,9 @@ reporters: ['tree']; // Use 'tree' for hierarchical output
 
 // If you want old behavior (don't print shadow root):
 export default defineConfig({
-  test: {
-    printShadowRoot: false,
-  },
+	test: {
+		printShadowRoot: false,
+	},
 });
 ```
 

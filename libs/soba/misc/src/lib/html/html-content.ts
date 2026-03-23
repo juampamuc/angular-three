@@ -125,8 +125,8 @@ export interface NgtsHTMLContentOptions {
 	parent?: HTMLElement | ElementRef<HTMLElement>;
 	/**
 	 * Computes z-index with a logarithmic scale, which prevents
-     * near objects from all having the same z-index when
-     * camera.far is very large.
+	 * near objects from all having the same z-index when
+	 * camera.far is very large.
 	 */
 	logarithmicDepth?: boolean;
 }

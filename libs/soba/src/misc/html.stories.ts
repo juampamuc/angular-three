@@ -88,7 +88,10 @@ class HtmlTransformScene {
 				<ngt-mesh-basic-material color="hotpink" wireframe />
 
 				<ngts-html [options]="{ position: [2.5, 0, 0] }">
-					<div [htmlContent]="{ center: true }" style="color: white; background: rgba(0,0,0,0.5); padding: 4px 8px; white-space: nowrap;">
+					<div
+						[htmlContent]="{ center: true }"
+						style="color: white; background: rgba(0,0,0,0.5); padding: 4px 8px; white-space: nowrap;"
+					>
 						High Detail
 					</div>
 				</ngts-html>
@@ -99,7 +102,10 @@ class HtmlTransformScene {
 				<ngt-mesh-basic-material color="orange" wireframe />
 
 				<ngts-html [options]="{ position: [2.5, 0, 0] }">
-					<div [htmlContent]="{ center: true }" style="color: white; background: rgba(0,0,0,0.5); padding: 4px 8px; white-space: nowrap;">
+					<div
+						[htmlContent]="{ center: true }"
+						style="color: white; background: rgba(0,0,0,0.5); padding: 4px 8px; white-space: nowrap;"
+					>
 						Medium Detail
 					</div>
 				</ngts-html>
@@ -110,7 +116,10 @@ class HtmlTransformScene {
 				<ngt-mesh-basic-material color="skyblue" wireframe />
 
 				<ngts-html [options]="{ position: [2.5, 0, 0] }">
-					<div [htmlContent]="{ center: true }" style="color: white; background: rgba(0,0,0,0.5); padding: 4px 8px; white-space: nowrap;">
+					<div
+						[htmlContent]="{ center: true }"
+						style="color: white; background: rgba(0,0,0,0.5); padding: 4px 8px; white-space: nowrap;"
+					>
 						Low Detail
 					</div>
 				</ngts-html>

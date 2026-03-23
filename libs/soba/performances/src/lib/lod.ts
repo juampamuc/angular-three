@@ -1,17 +1,17 @@
-import { Component, contentChildren, Directive, ElementRef, inject, input, signal, TemplateRef } from "@angular/core";
-import { NgTemplateOutlet } from "@angular/common";
-import { beforeRender, injectStore } from "angular-three";
+import { NgTemplateOutlet } from '@angular/common';
+import { Component, contentChildren, Directive, ElementRef, inject, input, signal, TemplateRef } from '@angular/core';
+import { beforeRender, injectStore } from 'angular-three';
 import { mergeInputs } from 'ngxtension/inject-inputs';
-import { Object3D, Vector3 } from "three";
+import { Object3D, Vector3 } from 'three';
 
 export type NgtsLODLevelOptions = {
-  distance: number;
-  hysteresis: number;
-}
+	distance: number;
+	hysteresis: number;
+};
 
 const defaultLodLevelOptions: NgtsLODLevelOptions = {
-  distance: 0,
-  hysteresis: 0,
+	distance: 0,
+	hysteresis: 0,
 };
 
 const _v1 = new Vector3();
@@ -22,11 +22,11 @@ const _v2 = new Vector3();
  * an NgtsLOD component.
  */
 @Directive({
-  selector: 'ng-template[lodLevel]'
+	selector: 'ng-template[lodLevel]',
 })
 export class NgtsLODLevel {
-  lodLevel = input(defaultLodLevelOptions, { transform: mergeInputs(defaultLodLevelOptions) });
-  template = inject(TemplateRef);
+	lodLevel = input(defaultLodLevelOptions, { transform: mergeInputs(defaultLodLevelOptions) });
+	template = inject(TemplateRef);
 }
 
 /**
@@ -50,67 +50,63 @@ export class NgtsLODLevel {
  * ```
  */
 @Component({
-  selector: '[lod]',
-  template: `
-    <ng-container [ngTemplateOutlet]="level()?.template" />
-  `,
-  imports: [NgTemplateOutlet],
+	selector: '[lod]',
+	template: `
+		<ng-container [ngTemplateOutlet]="level()?.template" />
+	`,
+	imports: [NgTemplateOutlet],
 })
 export class NgtsLODImpl {
-  maxDistance = input<number>();
+	maxDistance = input<number>();
 
-  private store = injectStore();
+	private store = injectStore();
 	private container = inject(ElementRef);
 
-  readonly levels = contentChildren(NgtsLODLevel);
-  readonly level = signal<NgtsLODLevel|undefined>(undefined);
+	readonly levels = contentChildren(NgtsLODLevel);
+	readonly level = signal<NgtsLODLevel | undefined>(undefined);
 
-  constructor() {
-    beforeRender(() => {
+	constructor() {
+		beforeRender(() => {
+			const levels = this.levels();
+			const currentLevel = this.level();
+			const maxDistance = this.maxDistance();
 
-      const levels = this.levels();
-      const currentLevel = this.level();
-      const maxDistance = this.maxDistance();
+			let level: NgtsLODLevel | undefined = levels[0];
 
-      let level: NgtsLODLevel|undefined = levels[0];
+			if (level && (levels.length > 1 || maxDistance)) {
+				const container = this.container.nativeElement as Object3D;
+				const { matrixWorld, zoom } = this.store.snapshot.camera;
 
-      if(level && (levels.length > 1 || maxDistance)) {
+				_v1.setFromMatrixPosition(matrixWorld);
+				_v2.setFromMatrixPosition(container.matrixWorld);
 
-        const container = this.container.nativeElement as Object3D;
-        const {matrixWorld, zoom} = this.store.snapshot.camera;
+				const distance = _v1.distanceTo(_v2) / zoom;
 
-        _v1.setFromMatrixPosition( matrixWorld );
-        _v2.setFromMatrixPosition( container.matrixWorld );
+				if (maxDistance && distance > maxDistance) {
+					level = undefined;
+				} else {
+					for (let i = 1, l = levels.length; i < l; i++) {
+						const _level = levels[i];
+						let { distance: levelDistance, hysteresis } = _level.lodLevel();
 
-        const distance = _v1.distanceTo( _v2 ) / zoom;
+						if (hysteresis && currentLevel === _level) {
+							levelDistance -= levelDistance * hysteresis;
+						}
 
-        if(maxDistance && distance > maxDistance) {
-          level = undefined;
-        }
-        else {
-          for (let i = 1, l = levels.length; i < l; i ++ ) {
-            const _level = levels[i];
-            let {distance: levelDistance, hysteresis} = _level.lodLevel();
+						if (distance >= levelDistance) {
+							level = _level;
+						} else {
+							break;
+						}
+					}
+				}
+			}
 
-            if (hysteresis && currentLevel === _level) {
-              levelDistance -= levelDistance * hysteresis;
-            }
-
-            if (distance >= levelDistance) {
-              level = _level;
-            }
-            else {
-              break;
-            }
-          }
-        }
-      }
-
-      if(level !== currentLevel) {
-        this.level.set(level);
-      }
-    });
-  }
+			if (level !== currentLevel) {
+				this.level.set(level);
+			}
+		});
+	}
 }
 
 export const NgtsLOD = [NgtsLODImpl, NgtsLODLevel] as const;

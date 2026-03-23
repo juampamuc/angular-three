@@ -69,8 +69,9 @@ export type NgtRendererState =
 	| CommentRendererState
 	| TextRendererState;
 
-export interface NgtRendererNode<TType extends keyof NgtRendererStateMap = keyof NgtRendererStateMap>
-	extends NgtAnyRecord {
+export interface NgtRendererNode<
+	TType extends keyof NgtRendererStateMap = keyof NgtRendererStateMap,
+> extends NgtAnyRecord {
 	[NGT_RENDERER_NODE_FLAG]: NgtRendererStateMap[TType];
 	[NGT_DOM_PARENT_FLAG]?: HTMLElement;
 }

@@ -122,7 +122,12 @@ export function objectScale(el: THREE.Object3D, camera: THREE.Camera) {
  * @param logarithmicDepth - Computes the z-index logarithmicly to enable a wider camera range
  * @returns Calculated z-index, or `undefined` for unsupported camera types
  */
-export function objectZIndex(el: THREE.Object3D, camera: THREE.Camera, zIndexRange: Array<number>, logarithmicDepth = false) {
+export function objectZIndex(
+	el: THREE.Object3D,
+	camera: THREE.Camera,
+	zIndexRange: Array<number>,
+	logarithmicDepth = false,
+) {
 	if (
 		is.three<THREE.PerspectiveCamera>(camera, 'isPerspectiveCamera') ||
 		is.three<THREE.OrthographicCamera>(camera, 'isOrthographicCamera')
@@ -130,7 +135,7 @@ export function objectZIndex(el: THREE.Object3D, camera: THREE.Camera, zIndexRan
 		const objectPos = v1.setFromMatrixPosition(el.matrixWorld);
 		const cameraPos = v2.setFromMatrixPosition(camera.matrixWorld);
 		const dist = objectPos.distanceTo(cameraPos);
-        if (logarithmicDepth) {
+		if (logarithmicDepth) {
 			const safeNear = Math.max(camera.near, 1e-6);
 			const safeDist = Math.max(dist, 1e-6);
 			const depth = Math.log(safeDist / safeNear) / Math.log(camera.far / safeNear);
