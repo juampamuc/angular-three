@@ -1,3 +1,18 @@
+## 4.2.1 (2026-03-23)
+
+### 🚀 Features
+
+- **soba:** Angular-based Level of Detail (LOD) implementation ([#82](https://github.com/angular-threejs/angular-three/pull/82))
+
+### 🩹 Fixes
+
+- **core:** skip invisible objects before intersectObject ([#81](https://github.com/angular-threejs/angular-three/pull/81))
+
+### ❤️ Thank You
+
+- Chau Tran @nartc
+- Eric Leibenguth
+
 ## 4.2.0 (2026-03-12)
 
 ### 🚀 Features
